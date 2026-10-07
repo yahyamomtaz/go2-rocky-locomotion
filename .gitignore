@@ -1,0 +1,17 @@
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+
+# Virtual environments
+.venv
+
+# Run outputs: keep only the fitted table and the trained policies
+runs/*
+!runs/proxy_table.json
+!runs/train/
+runs/train/*/*
+!runs/train/*/policy.pt
