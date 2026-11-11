@@ -1,20 +1,38 @@
 [project]
-name = "newton-terrain"
+name = "go2-rocky-locomotion"
 version = "0.1.0"
-description = "Unitree Go2 on sand and snow: two-way coupled MPM terrain in NVIDIA Warp / Newton, and a fast Warp terrain model for PPO training"
 requires-python = ">=3.12"
 dependencies = [
-    "newton[examples]>=1.6.0",
-    "rsl-rl-lib==5.5.1",
-    "torch==2.12.0",
+    "newton[examples]==1.6.0",
+    "opensimplex>=0.4.5.1",
+    "warp-lang==1.18.0",
 ]
 
-[build-system]
-requires = ["uv_build>=0.11,<0.12"]
-build-backend = "uv_build"
-
-[tool.uv.build-backend]
-module-root = ""
+[project.optional-dependencies]
+train = [
+    "torch==2.12.0",
+    "rsl-rl-lib==5.5.1",
+    "tensorboard>=2.20",
+    "onnxscript>=0.5",
+]
+video = [
+    "imageio[ffmpeg]>=2.37",
+]
 
 [[tool.uv.index]]
+name = "pytorch-cu130"
 url = "https://download.pytorch.org/whl/cu130"
+explicit = true
+
+[tool.uv.sources]
+torch = { index = "pytorch-cu130" }
+
+[dependency-groups]
+dev = [
+    "matplotlib>=3.11.2",
+    "pytest>=9.2.0",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
