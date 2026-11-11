@@ -195,37 +195,6 @@ Install the locked training extra and pre-cache Go2 assets on a networked
 node before using offline compute nodes. Use separate jobs for training seeds;
 this entry point does not enable distributed multi-GPU training.
 
-## How it works
-
-- **Terrain.** An 80 m procedural mountain with a curved uphill trail, native
-  collision heightfield, continuous fractured relief, and 1,400 separate fixed
-  convex rocks at medium roughness. Angular outcrops are partly embedded into
-  the hillside. The renderer uses the same physical surface and rock meshes.
-- **Rigid training environment.** Independent Go2 worlds use actual rotated
-  slopes, convex rocks, and optional fractured heightfields, with vertical
-  gravity `(0, 0, -9.81)`. Static geometry is shared where possible; slope
-  transforms and rock positions vary across worlds. There are no sand/MPM
-  forces in this environment.
-- **Training.** PPO in rsl-rl fine-tunes Newton's pretrained actor, keeping its
-  48 proprioceptive observations, 12 joint-target actions, action scale, PD
-  gains, 50 Hz policy, and 200 Hz physics. The critic additionally sees a
-  slope-normal vector and terrain-relative clearance. Actor inputs contain
-  true projected gravity, without a height scan. Posture rewards allow uphill
-  pitch relative to the mean slope normal. Rewards track path velocity, yaw,
-  and progress, and penalize violent motion, action changes, estimated PD
-  effort, and low body height. The static terrain bank stays fixed during a
-  run; resets vary initial pose and commanded speed. Training-bank success
-  must be checked against unseen terrain and training seeds.
-- **Evaluation.** The original and trained actors run on the full rocky
-  mountain with matched seeds, initial poses, commands, and goals. The outer
-  path controller uses simulator pose and the known route to generate
-  velocity commands; it does not apply propulsion forces or script motion.
-
-The comparison GIF is an OpenGL rendering of saved trajectories. Recording
-tools are included; playback time follows simulation time, and a shorter
-clip holds its labelled final frame. The inherited sand/snow experiments
-remain separate from the rocky-terrain workflow.
-
 ## Repository layout
 
 ```text
